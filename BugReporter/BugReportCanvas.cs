@@ -50,6 +50,7 @@ public class BugReportCanvas {
 
     private static void SetupFixText(TextMeshProUGUI text, int index) {
         text.gameObject.SetActive(false);
+        text.fontSize = 12;
         Object.Destroy(text.transform.GetChild(0).gameObject);
         Object.Destroy(text.GetComponent<LinkOpener>());
         bugFixers[index] = text.GetOrAddComponent<BugFixer>();
