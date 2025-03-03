@@ -58,7 +58,7 @@ public class BugReportCanvas {
     }
 
     public static void ShowError() {
-        if(scrController.instance && scrController.instance.paused && scrConductor.instance && scrConductor.instance.isGameWorld) {
+        if(scrController.instance && !scrController.instance.paused && scrConductor.instance && scrConductor.instance.isGameWorld) {
             Main.Instance.Log("Game is work! not showing error");
             return;
         }
