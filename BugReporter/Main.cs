@@ -29,6 +29,7 @@ public class Main : JAMod {
     }
 
     protected override void OnDisable() {
+        Application.logMessageReceived -= OnLogReceived;
     }
 
     private void OnLogReceived(string condition, string stackTrace, LogType type) {
