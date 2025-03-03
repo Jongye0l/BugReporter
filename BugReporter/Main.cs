@@ -32,6 +32,17 @@ public class Main : JAMod {
         Application.logMessageReceived -= OnLogReceived;
     }
 
+#if DEBUG
+    protected override void OnGUI() {
+        if(!GUILayout.Button("Report Dummy Bug")) return;
+        try {
+            throw new Exception("Test Exception");
+        } catch (Exception e) {
+            ReportException("Test Exception", e, []);
+        }
+    }
+#endif
+
     private void OnLogReceived(string condition, string stackTrace, LogType type) {
         if(type != LogType.Exception) return;
         string data = condition + stackTrace;
