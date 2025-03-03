@@ -27,7 +27,7 @@ public class ExceptionBug : ReportableBug {
         else if(exception.InnerException != null) SetupStackTrace(exception.InnerException);
         StackFrame[] frames = new StackTrace(exception, true).GetFrames();
         string[] stackStrings = exception.StackTrace.Split("\n");
-        for(int i = 0; i < frames.Length; i++) {
+        for(int i = 0; i < Math.Min(frames.Length, stackStrings.Length); i++) {
             StackFrame frame = frames[i];
             MethodBase methodBase = frame.GetMethod();
             if(methodBase == null) {
