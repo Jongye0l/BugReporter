@@ -35,6 +35,7 @@ public class ExceptionBug : ReportableBug {
                 string funcFullNameWithParams = trimedString.Split(" ")[3];
                 string funcFullName;
                 bool dynamicMethod = trimedString.StartsWith("at (wrapper dynamic-method)");
+                bool patchMethod = false;
                 try {
                     funcFullName = funcFullNameWithParams[..funcFullNameWithParams.IndexOf('(')];
                     if(dynamicMethod) funcFullName = funcFullName.Replace("MonoMod.Utils.DynamicMethodDefinition.", "");
@@ -44,7 +45,7 @@ public class ExceptionBug : ReportableBug {
                 }
                 Match match = Regex.Match(funcFullName, @"(_Patch\d+)$");
                 if(match.Success) {
-                    hasPatchMethod = true;
+                    hasPatchMethod = patchMethod = true;
                     funcFullName = funcFullName[..^match.Length];
                 } else if(dynamicMethod) {
                     Main.Instance.Warning("Dynamic method is not supported: " + funcFullName);
@@ -64,12 +65,11 @@ public class ExceptionBug : ReportableBug {
                         methods.RemoveAt(i2--);
                     }
                     if(methods.Count > 1) {
-                        ParameterInfo[] parameters = frame.GetMethod().GetParameters();
-                        for(int i2 = 0; i2 < parameters.Length; i2++) {
-                            Type type = parameters[i2].ParameterType;
+                        for(int i2 = 0; i2 < types.Length; i2++) {
+                            string t = types[i2];
                             for(int i3 = 0; i3 < methods.Count; i3++) {
-                                int i4 = !methods[i3].IsStatic ? i2 - 1 : i2;
-                                if((i4 == -1 ? methods[i3].DeclaringType : methods[i3].GetParameters()[i4].ParameterType) == type) continue;
+                                int i4 = patchMethod && !methods[i3].IsStatic ? i2 - 1 : i2;
+                                if((i4 == -1 ? methods[i3].DeclaringType.FullName : methods[i3].GetParameters()[i4].ParameterType.FullName) == t.Split(" ")[0]) continue;
                                 methods.RemoveAt(i3--);
                             }
                             if(methods.Count <= 1) break;
