@@ -21,7 +21,14 @@ public class Main : JAMod {
 
     protected override void OnSetup() {
         Patcher.AddPatch(typeof(Main));
+        try {
+            SetupNewModManager();
+        } catch (Exception) {
+            // ignored
+        }
     }
+
+    private void SetupNewModManager() => Patcher.AddPatch(ReportExceptionTranspiler, new JAPatchAttribute(UnityModManager.InstallerParam.Load, PatchType.Transpiler, false));
 
     protected override void OnEnable() {
         BugReportCanvas.Setup();
@@ -79,7 +86,6 @@ public class Main : JAMod {
     [JAPatch(typeof(UnityModManager), nameof(UnityModManager.SaveSettingsAndParams), PatchType.Transpiler, false)]
     [JAPatch(typeof(UnityModManager.Param), nameof(UnityModManager.Param.Save), PatchType.Transpiler, false)]
     [JAPatch(typeof(UnityModManager.Param), nameof(UnityModManager.Param.Load), PatchType.Transpiler, false)]
-    [JAPatch(typeof(UnityModManager.InstallerParam), nameof(UnityModManager.InstallerParam.Load), PatchType.Transpiler, false)]
     [JAPatch(typeof(UnityModManager.ModEntry), "Active.set", PatchType.Transpiler, false)]
     [JAPatch(typeof(UnityModManager.ModEntry), nameof(UnityModManager.ModEntry.Load), PatchType.Transpiler, false)]
     [JAPatch(typeof(UnityModManager.ModEntry), nameof(UnityModManager.ModEntry.Invoke), PatchType.Transpiler, false)]
